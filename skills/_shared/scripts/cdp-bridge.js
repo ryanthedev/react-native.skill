@@ -6,6 +6,8 @@
 
 "use strict";
 
+const fs = require("fs");
+
 // -- Node version check --
 
 const nodeMajor = parseInt(process.version.slice(1), 10);
@@ -355,7 +357,7 @@ async function modeTree(client, args) {
     const output = args.format === "text"
         ? formatTreeAsText(value)
         : JSON.stringify(value, null, 2) + "\n";
-    process.stdout.write(output);
+    emitTreeOutput(output, args.format);
     client.close();
     process.exit(0);
 }
@@ -405,6 +407,28 @@ function formatTreeAsText(value) {
     }
 
     return lines.join("\n") + "\n";
+}
+
+// -- Adaptive output for tree mode --
+// Writes tree output to stdout if small enough, otherwise to a temp file.
+// Large output (>60KB) would exceed macOS pipe buffer limits when the caller
+// reads stdout, so we write to /tmp and print the path instead.
+
+function emitTreeOutput(output, format) {
+    const SIZE_LIMIT_BYTES = 60 * 1024;
+    const byteSize = Buffer.byteLength(output, "utf8");
+
+    if (byteSize > SIZE_LIMIT_BYTES) {
+        const extension = format === "json" ? ".json" : ".txt";
+        const tempPath = "/tmp/cdp-tree-" + Date.now() + extension;
+        fs.writeFileSync(tempPath, output, "utf8");
+        const sizeKB = Math.round(byteSize / 1024);
+        process.stdout.write(tempPath + "\n");
+        process.stderr.write(`Tree output is ${sizeKB}KB -- written to ${tempPath}\n`);
+        process.stderr.write("Use --depth or --find to reduce output size\n");
+    } else {
+        process.stdout.write(output);
+    }
 }
 
 // -- Mode: network --
