@@ -30,6 +30,9 @@ Dispatch Agent:
        Read the output file path to see the screenshot.
     2. Run: ${CLAUDE_SKILL_DIR}/../ios-sim/scripts/ui.sh describe-all
        Parse the full accessibility tree JSON.
+       If this fails (e.g., "idb is not installed" error), skip the accessibility tree
+       and proceed with screenshot-only analysis. Note in your report that element
+       positions are estimated from visual inspection, not the accessibility tree.
     3. Analyze and return a structured report:
 
        ELEMENT POSITIONS:

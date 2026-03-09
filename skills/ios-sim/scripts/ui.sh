@@ -9,6 +9,15 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # IDB path: honor env var or default to "idb"
 IDB="${IOS_SIMULATOR_MCP_IDB_PATH:-idb}"
 
+# Guard: all ui.sh commands require idb
+if ! command -v "$IDB" >/dev/null 2>&1; then
+    echo "Error: idb is not installed. All ui.sh commands require Facebook IDB." >&2
+    echo "" >&2
+    echo "Install with:  pip3 install fb-idb" >&2
+    echo "Or set IOS_SIMULATOR_MCP_IDB_PATH to your idb binary location." >&2
+    exit 1
+fi
+
 # Validate UDID format (8-4-4-4-12 hex)
 validate_udid() {
     local udid="$1"

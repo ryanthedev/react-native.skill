@@ -21,7 +21,7 @@ Always dispatch a subagent for visual/inspection tasks.
 
 - macOS with Xcode installed
 - A booted iOS simulator (`xcrun simctl list devices` to check)
-- Facebook IDB installed for UI interactions (`idb --version` to check)
+- Facebook IDB (`pip3 install fb-idb`) — required for `ui.sh` commands (tap, type, swipe, describe-all, describe-point). `capture.sh view` works without idb using a sips fallback for dimensions.
 - See `${CLAUDE_SKILL_DIR}/references/troubleshooting.md` if anything is missing
 
 ## Scripts

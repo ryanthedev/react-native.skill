@@ -86,19 +86,32 @@ cmd_view() {
     local udid
     udid=$(get_udid)
 
-    # Get screen dimensions from accessibility tree
-    local ui_json
-    ui_json=$("$IDB" ui describe-all --udid "$udid" --json --nested 2>/dev/null)
-
-    local width height
-    width=$(echo "$ui_json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(int(d[0]['frame']['width']))" 2>/dev/null || echo "")
-    height=$(echo "$ui_json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(int(d[0]['frame']['height']))" 2>/dev/null || echo "")
+    # Get screen dimensions from accessibility tree (if idb is available)
+    local width="" height=""
+    if command -v "$IDB" >/dev/null 2>&1; then
+        local ui_json
+        ui_json=$("$IDB" ui describe-all --udid "$udid" --json --nested 2>/dev/null) || true
+        width=$(echo "$ui_json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(int(d[0]['frame']['width']))" 2>/dev/null || echo "")
+        height=$(echo "$ui_json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(int(d[0]['frame']['height']))" 2>/dev/null || echo "")
+    fi
 
     local raw_png="$TMP_DIR/raw.png"
     local compressed_jpg="$TMP_DIR/compressed.jpg"
 
     # Capture PNG screenshot
     xcrun simctl io "$udid" screenshot --type=png -- "$raw_png" 2>/dev/null
+
+    # Fallback: derive point dimensions from PNG pixel size when idb is unavailable
+    if [[ -z "$width" || -z "$height" ]]; then
+        local pixel_w pixel_h
+        pixel_w=$(sips -g pixelWidth "$raw_png" 2>/dev/null | awk '/pixelWidth/{print $2}')
+        pixel_h=$(sips -g pixelHeight "$raw_png" 2>/dev/null | awk '/pixelHeight/{print $2}')
+        if [[ -n "$pixel_w" && -n "$pixel_h" ]]; then
+            # Divide by 3 for Retina point dimensions (all current iOS Simulator devices are 3x)
+            width=$(( pixel_w / 3 ))
+            height=$(( pixel_h / 3 ))
+        fi
+    fi
 
     if [[ -n "$width" && -n "$height" ]]; then
         # Resize to point dimensions and compress to JPEG
