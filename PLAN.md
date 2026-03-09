@@ -213,13 +213,13 @@ rn-coding   → refs/react-native-docs/docs/     (grep, same as rn-docs; path re
 8. Update `.claude/settings.local.json` — new skill permissions + `Bash(*/skills/_shared/scripts/*)`
 9. Update `plugin.json` — bump to v0.2.0
 
-### Phase 2d: Deferred (Future)
+### Phase 2d: Completed + Deferred
 
-- CDP integration into rn-layout-check (computed styles via Runtime.evaluate)
-- CDP integration into rn-a11y-audit (React-level a11y props via fiber tree)
-- Android emulator equivalent of ios-sim (adb-based UI automation)
-- HMR WebSocket monitoring for live reload error detection
-- Callstack best-practices cross-reference in rn-coding
+- ~~CDP integration into rn-layout-check (computed styles via Runtime.evaluate)~~ (done — v0.3.0)
+- ~~CDP integration into rn-a11y-audit (React-level a11y props via fiber tree)~~ (done — v0.3.0)
+- Android emulator equivalent of ios-sim (adb-based UI automation) (deferred)
+- ~~HMR WebSocket monitoring for live reload error detection~~ (done — v0.3.0)
+- ~~Callstack best-practices cross-reference in rn-coding~~ (done — v0.3.0)
 
 ### Smoke Tests
 
