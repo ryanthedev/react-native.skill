@@ -53,9 +53,34 @@ Dispatch Agent:
     USER CONCERN: [insert user's layout question here]
 ```
 
+### Step 1.5 — Computed Styles (optional)
+
+If Metro/Hermes debugger is available, extract actual computed style values from the React fiber tree to compare against visual observations.
+
+**Guard:** Run `${CLAUDE_SKILL_DIR}/../_shared/scripts/metro.sh status`. If exit code is 1 (Metro not running), skip silently to Step 2.
+
+**If Metro is running:**
+
+Run `${CLAUDE_SKILL_DIR}/../_shared/scripts/cdp-bridge.js eval` with an inline JS expression that:
+
+1. Accesses `__REACT_DEVTOOLS_GLOBAL_HOOK__`
+2. Gets fiber roots from the hook
+3. Walks the fiber tree starting from `root.current`
+4. For each fiber node:
+   - Gets the component name (`type.displayName` or `type.name`)
+   - Reads `memoizedProps.style`
+   - Filters to target props only: `flexDirection`, `justifyContent`, `alignItems`, `flex`, `alignSelf`, `flexWrap`, `backgroundColor`, `borderWidth`, `borderColor`, `borderRadius`
+   - Skips nodes with no style props or empty filtered result
+5. Returns array of `{name, styles}` objects
+6. Limits output by only including components with non-empty filtered styles
+
+Save the output as "computed styles" for use in Step 2.
+
+> The expression handles both resolved style objects and StyleSheet numeric IDs (fiber stores resolved values in dev mode). Output is compact (~1-3 KB) so it stays in main context (no subagent needed).
+
 ### Step 2 — Search docs for relevant properties
 
-In the main context, grep the docs for layout properties related to the subagent's findings.
+In the main context, grep the docs for layout properties related to the subagent's findings. If computed styles are available from Step 1.5, compare visual observations against actual flex/style values to confirm or refine the diagnosis.
 
 ```
 Docs path: ${CLAUDE_SKILL_DIR}/../../refs/react-native-docs/docs/
@@ -86,6 +111,7 @@ Match the subagent findings against documentation to identify root cause. Return
 | Screenshot JPEG | ~100-300 KB | Subagent only |
 | Accessibility tree JSON | ~10-100 KB | Subagent only |
 | Subagent layout summary | ~500-1500 chars | Main context |
+| Computed styles JSON | ~1-3 KB | Main context |
 | Doc snippets from Grep | ~200-800 chars | Main context |
 
 ## Common Layout Issues Reference
