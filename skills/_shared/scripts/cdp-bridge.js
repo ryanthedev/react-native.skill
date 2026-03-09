@@ -264,9 +264,11 @@ async function modeTree(client, args) {
         return Object.keys(out).length > 0 ? out : null;
     }
 
+    // When --find is used, search the full tree but limit matched subtree depth.
+    // When --find is NOT used, --depth limits the entire traversal.
     function walkFiber(fiber, depth) {
         if (!fiber) return null;
-        if (maxDepth !== null && depth > maxDepth) return null;
+        if (!findName && maxDepth !== null && depth > maxDepth) return null;
 
         var name = getComponentName(fiber);
         var node = {
@@ -291,7 +293,18 @@ async function modeTree(client, args) {
         }
 
         if (findName && name === findName) {
-            matches.push(node);
+            // For matched nodes, trim subtree to --depth if specified
+            if (maxDepth !== null) {
+                function trimNode(n, d) {
+                    if (d >= maxDepth) { n.children = []; return; }
+                    n.children.forEach(function(c) { trimNode(c, d + 1); });
+                }
+                var copy = JSON.parse(JSON.stringify(node));
+                trimNode(copy, 0);
+                matches.push(copy);
+            } else {
+                matches.push(node);
+            }
         }
 
         return node;
@@ -339,9 +352,59 @@ async function modeTree(client, args) {
         process.exit(1);
     }
 
-    process.stdout.write(JSON.stringify(value, null, 2) + "\n");
+    const output = args.format === "text"
+        ? formatTreeAsText(value)
+        : JSON.stringify(value, null, 2) + "\n";
+    process.stdout.write(output);
     client.close();
     process.exit(0);
+}
+
+// -- Text formatter for tree output --
+// Converts a tree node (or find-result with matches) into a human-readable
+// indented text representation. Unnamed nodes (React internals) are skipped
+// but their children are promoted to the same indent level.
+
+function formatTreeAsText(value) {
+    const lines = [];
+
+    function formatNode(node, indentLevel) {
+        if (node.name !== null) {
+            let line = "  ".repeat(indentLevel) + node.name;
+            if (node.props !== null) {
+                const keys = Object.keys(node.props);
+                line += " {" + keys.join(", ") + "}";
+            }
+            lines.push(line);
+            // Children of named nodes indent one level deeper
+            if (node.children) {
+                for (const child of node.children) {
+                    formatNode(child, indentLevel + 1);
+                }
+            }
+        } else {
+            // Unnamed node: skip visually, recurse children at same indent
+            if (node.children) {
+                for (const child of node.children) {
+                    formatNode(child, indentLevel);
+                }
+            }
+        }
+    }
+
+    // Detect shape: find-result has { find, matches }, plain tree has { name, ... }
+    if (value.find !== undefined && value.matches !== undefined) {
+        for (let idx = 0; idx < value.matches.length; idx++) {
+            if (idx > 0) {
+                lines.push("");
+            }
+            formatNode(value.matches[idx], 0);
+        }
+    } else {
+        formatNode(value, 0);
+    }
+
+    return lines.join("\n") + "\n";
 }
 
 // -- Mode: network --
@@ -384,6 +447,7 @@ function parseArgs() {
         expression: null,
         find: null,
         depth: null,
+        format: "json",
     };
 
     let i = 0;
@@ -401,6 +465,15 @@ function parseArgs() {
             case "--depth":
                 args.depth = parseInt(argv[++i], 10);
                 break;
+            case "--format": {
+                const fmt = argv[++i];
+                if (fmt !== "json" && fmt !== "text") {
+                    process.stderr.write("Error: --format must be 'json' or 'text'\n");
+                    process.exit(1);
+                }
+                args.format = fmt;
+                break;
+            }
             default:
                 if (argv[i].startsWith("-")) {
                     process.stderr.write(`Error: Unknown option '${argv[i]}'\n`);
@@ -434,7 +507,8 @@ function printUsage() {
         "  --port <PORT>       Metro port (default: $RCT_METRO_PORT or 8081)\n" +
         "  --timeout <SEC>     Stop after SEC seconds (console/network)\n" +
         '  --find <name>       Filter tree to component name (tree mode)\n' +
-        '  --depth <N>         Limit tree traversal depth (tree mode)\n'
+        '  --depth <N>         Limit tree traversal depth (tree mode)\n' +
+        '  --format json|text  Output format for tree mode (default: json)\n'
     );
     process.exit(1);
 }
