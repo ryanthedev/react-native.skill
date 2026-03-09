@@ -1,0 +1,10 @@
+{
+  "name": "react-native-foundations",
+  "version": "0.1.0",
+  "description": "React Native foundation skills — documentation search, API reference, and development patterns",
+  "author": {
+    "name": "r"
+  },
+  "license": "MIT",
+  "keywords": ["react-native", "documentation", "mobile", "ios", "android", "skills"]
+}
