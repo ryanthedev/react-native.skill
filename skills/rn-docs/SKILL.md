@@ -21,7 +21,7 @@ ${CLAUDE_SKILL_DIR}/../../refs/react-native-docs/docs/
 
 ## Workflow
 
-1. Read `${CLAUDE_SKILL_DIR}/MANIFEST.md` to find relevant files by title
+1. Read `${CLAUDE_SKILL_DIR}/references/manifest.md` to find relevant files by title
 2. Grep the docs directory for specific terms if the manifest isn't enough
 3. Read the matched files to extract the answer
 4. Cite the filename when referencing documentation
@@ -30,7 +30,7 @@ ${CLAUDE_SKILL_DIR}/../../refs/react-native-docs/docs/
 
 | Need | Tool | Example |
 |------|------|---------|
-| Find which file covers a topic | Read MANIFEST.md, scan titles | "Which file covers FlatList?" |
+| Find which file covers a topic | Read references/manifest.md, scan titles | "Which file covers FlatList?" |
 | Find specific API/prop/method | Grep docs directory | `Grep "onEndReached"` |
 | Find all files mentioning a concept | Grep with glob `*.md` | `Grep "useAnimatedStyle" --glob "*.md"` |
 | Read a known doc | Read the file directly | `Read docs/flatlist.md` |

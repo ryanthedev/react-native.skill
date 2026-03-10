@@ -2,31 +2,15 @@
 
 ## Prerequisites
 
-- **macOS only** — these scripts use `xcrun simctl` and `idb` which are macOS-specific
+- **macOS only** — these scripts use `xcrun simctl` and `AXe` which are macOS-specific
 - **Xcode** installed with iOS simulators
-- **Facebook IDB** installed for UI interactions (tap, type, swipe, describe)
+- **AXe** installed for UI interactions (tap, type, swipe, describe)
 
-## Installing IDB
-
-### Homebrew + pip
+## Installing AXe
 
 ```sh
-brew install python
-pip3 install --user fb-idb
-export PATH="$HOME/.local/bin:$PATH"  # Add to ~/.zshrc
-idb -h  # verify
-```
-
-### Using asdf
-
-```sh
-brew install asdf
-asdf plugin add python
-asdf install python latest
-asdf global python latest
-python -m pip install --user fb-idb
-export PATH="$HOME/.local/bin:$PATH"
-idb -h  # verify
+brew install cameroncooke/axe/axe
+axe --version  # verify
 ```
 
 ## Common Issues
@@ -35,10 +19,10 @@ idb -h  # verify
 - Open Xcode and boot a simulator, or run: `xcrun simctl boot <device-name>`
 - Verify with: `xcrun simctl list devices | grep Booted`
 
-### "idb: command not found"
-- Install IDB using the steps above
-- Check PATH: `which idb` or `echo $PATH`
-- Set custom path: `export IOS_SIMULATOR_MCP_IDB_PATH=/path/to/idb`
+### "AXe is not installed"
+- Install AXe using the steps above
+- Check PATH: `which axe` or `echo $PATH`
+- Set custom path: `export IOS_SIMULATOR_MCP_AXE_PATH=/path/to/axe`
 
 ### Taps/swipes hitting wrong location
 - Screenshots are captured at 3x pixel resolution
@@ -58,5 +42,5 @@ idb -h  # verify
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `IOS_SIMULATOR_MCP_IDB_PATH` | `idb` | Custom path to IDB executable |
+| `IOS_SIMULATOR_MCP_AXE_PATH` | `axe` | Custom path to AXe executable |
 | `IOS_SIMULATOR_MCP_DEFAULT_OUTPUT_DIR` | `~/Downloads` | Default directory for screenshots/recordings |

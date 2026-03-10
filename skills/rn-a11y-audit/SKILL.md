@@ -12,6 +12,15 @@ Audit the accessibility tree of a running React Native app in the iOS Simulator 
 
 ---
 
+## Dependencies
+
+| Skill / Resource | Why |
+|------------------|-----|
+| `ios-sim` | `ui.sh describe-all` captures the accessibility tree; `capture.sh view` used for optional screenshot context |
+| `_shared` (metro.sh, cdp-bridge.js) | Optional Step 1.5 — extracts React-declared a11y props via CDP when Metro is running |
+
+---
+
 ## Severity Levels
 
 | Level | Meaning | Examples |
@@ -23,6 +32,19 @@ Audit the accessibility tree of a running React Native app in the iOS Simulator 
 ---
 
 ## Workflow
+
+### Pre-check
+
+Before dispatching the subagent, verify AXe is installed:
+
+Run: `command -v "${IOS_SIMULATOR_MCP_AXE_PATH:-axe}" >/dev/null 2>&1`
+
+If this fails, stop and tell the user:
+"rn-a11y-audit requires AXe to read the accessibility tree.
+Install with: `brew install cameroncooke/axe/axe`
+Then re-run this skill."
+
+Do not dispatch the subagent if AXe is missing — it will fail immediately.
 
 ### Step 1 — Capture and audit the accessibility tree (subagent)
 
@@ -88,9 +110,29 @@ Dispatch Agent:
     Return text only. Be thorough but concise.
 ```
 
+### Step 1.5 — React A11y Props (optional)
+
+If Metro/Hermes debugger is available, extract React-declared accessibility props from the fiber tree and compare against the native accessibility tree from Step 1.
+
+**Guard:** Run `${CLAUDE_SKILL_DIR}/../_shared/scripts/metro.sh status`. If exit code is 1 (Metro not running), skip silently to Step 2.
+
+**If Metro is running:**
+
+Dispatch a subagent that:
+
+1. Runs `${CLAUDE_SKILL_DIR}/../_shared/scripts/cdp-bridge.js tree` (full fiber tree output)
+2. Extracts a11y props from each component: `accessible`, `accessibilityLabel`, `accessibilityRole`, `accessibilityHint`, `accessibilityState`, `accessibilityValue`, `importantForAccessibility`, `role`, `aria-label`, `aria-hidden`
+3. Compares React-declared a11y props against the native accessibility tree report from Step 1 (passed to subagent as context)
+4. Returns a DISCREPANCIES report listing:
+   - Components with React a11y props that don't appear in native tree
+   - Components in native tree missing expected React a11y props
+   - Mismatches between declared labels/roles and native values
+
+> Why subagent: Full fiber tree is 10-100 KB, too large for main context. The subagent processes it and returns only the discrepancy report (~1-3 KB).
+
 ### Step 2 — Enrich with documentation references
 
-After the subagent returns its report, grep the React Native docs for relevant best practices:
+After the subagent returns its report, grep the React Native docs for relevant best practices. If CDP data is available from Step 1.5, add a DISCREPANCIES section comparing React-declared props against native a11y tree values.
 
 ```
 Grep "${CLAUDE_SKILL_DIR}/../../refs/react-native-docs/docs/accessibility.md" for key terms
@@ -116,6 +158,7 @@ Combine the subagent audit report with doc references:
 | Accessibility tree JSON | ~10-100 KB | NEVER — subagent only |
 | Audit checklist | ~4 KB | Subagent only |
 | Subagent text report | ~1-3 KB | YES |
+| CDP a11y discrepancy report | ~1-3 KB | YES (from subagent) |
 | Doc grep results | ~200-500 chars | YES |
 
 ---

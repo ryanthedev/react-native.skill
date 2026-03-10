@@ -12,6 +12,15 @@ Test deep links by reading the project's navigation config, constructing URLs, f
 
 ---
 
+## Dependencies
+
+| Skill / Resource | Why |
+|------------------|-----|
+| `ios-sim` | Step 5 — subagent uses `capture.sh view` (via `xcrun simctl screenshot` directly) to verify the screen after firing the deep link |
+| `refs/react-native-docs` | Step 2 — docs search for deep linking patterns and universal link configuration |
+
+---
+
 ## Scripts
 
 - `${CLAUDE_SKILL_DIR}/scripts/openurl.sh <url>` — Validates and opens a URL in the booted simulator

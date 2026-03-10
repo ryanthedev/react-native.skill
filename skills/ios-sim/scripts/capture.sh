@@ -6,8 +6,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# IDB path: honor env var or default to "idb"
-IDB="${IOS_SIMULATOR_MCP_IDB_PATH:-idb}"
+# AXe path: honor env var or default to "axe"
+AXE="${IOS_SIMULATOR_MCP_AXE_PATH:-axe}"
 
 # Default output directory
 DEFAULT_OUTPUT_DIR="${IOS_SIMULATOR_MCP_DEFAULT_OUTPUT_DIR:-$HOME/Downloads}"
@@ -86,19 +86,32 @@ cmd_view() {
     local udid
     udid=$(get_udid)
 
-    # Get screen dimensions from accessibility tree
-    local ui_json
-    ui_json=$("$IDB" ui describe-all --udid "$udid" --json --nested 2>/dev/null)
-
-    local width height
-    width=$(echo "$ui_json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(int(d[0]['frame']['width']))" 2>/dev/null || echo "")
-    height=$(echo "$ui_json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(int(d[0]['frame']['height']))" 2>/dev/null || echo "")
+    # Get screen dimensions from accessibility tree (if AXe is available)
+    local width="" height=""
+    if command -v "$AXE" >/dev/null 2>&1; then
+        local ui_json
+        ui_json=$("$AXE" describe-ui --udid "$udid" 2>/dev/null) || true
+        width=$(echo "$ui_json" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{console.log(Math.round(JSON.parse(d)[0].frame.width))}catch{}})" 2>/dev/null || echo "")
+        height=$(echo "$ui_json" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{console.log(Math.round(JSON.parse(d)[0].frame.height))}catch{}})" 2>/dev/null || echo "")
+    fi
 
     local raw_png="$TMP_DIR/raw.png"
     local compressed_jpg="$TMP_DIR/compressed.jpg"
 
     # Capture PNG screenshot
     xcrun simctl io "$udid" screenshot --type=png -- "$raw_png" 2>/dev/null
+
+    # Fallback: derive point dimensions from PNG pixel size when AXe is unavailable
+    if [[ -z "$width" || -z "$height" ]]; then
+        local pixel_w pixel_h
+        pixel_w=$(sips -g pixelWidth "$raw_png" 2>/dev/null | awk '/pixelWidth/{print $2}')
+        pixel_h=$(sips -g pixelHeight "$raw_png" 2>/dev/null | awk '/pixelHeight/{print $2}')
+        if [[ -n "$pixel_w" && -n "$pixel_h" ]]; then
+            # Divide by 3 for Retina point dimensions (all current iOS Simulator devices are 3x)
+            width=$(( pixel_w / 3 ))
+            height=$(( pixel_h / 3 ))
+        fi
+    fi
 
     if [[ -n "$width" && -n "$height" ]]; then
         # Resize to point dimensions and compress to JPEG
