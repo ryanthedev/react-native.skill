@@ -50,15 +50,3 @@ Use the ios-sim skill's workflows. **Never use raw xcrun simctl or osascript com
 - **Multi-step interaction:** Use the ios-sim **interact** workflow — dispatch a subagent with the full command reference from the skill.
 - **Navigate:** `ui.sh back` to go back, `ui.sh scroll top|bottom` to scroll.
 
----
-
-## Common Gotchas
-
-- FlatList requires `keyExtractor` or `key` prop on items
-- ScrollView inside FlatList causes performance issues
-- Absolute positioning works differently than web CSS
-- StatusBar behavior differs iOS vs Android
-- SafeAreaView only works on iOS (use `react-native-safe-area-context` for cross-platform)
-- Dimensions API returns points not pixels on iOS (3x on Retina)
-- TextInput `onChangeText` gives string, `onChange` gives event object
-- TouchableOpacity vs Pressable: prefer Pressable (newer, more flexible)

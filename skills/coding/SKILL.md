@@ -65,3 +65,5 @@ After implementation, suggest verification:
 - Prefer Pressable over TouchableOpacity (newer, more flexible)
 - `flex: 1` in RN is `flexGrow: 1, flexShrink: 1, flexBasis: 0` — not the same as CSS
 - `overflow` defaults to `hidden` on Android, `visible` on iOS
+- `fetch(fileUri).blob()` produces 0-byte blobs on RN — use FormData with `{ uri, type, name }` for file uploads
+
