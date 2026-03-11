@@ -1,2 +1,5 @@
 # Build-phase artifacts from /code-foundations:building
 docs/
+
+# But track the docs skill
+!skills/docs/

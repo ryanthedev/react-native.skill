@@ -1,6 +1,6 @@
 # React Native Error Pattern Database
 
-Quick-reference for `rn-diagnose`. Each pattern includes: regex/string match, root cause, and fix.
+Quick-reference for `diagnose`. Each pattern includes: regex/string match, root cause, and fix.
 
 ---
 

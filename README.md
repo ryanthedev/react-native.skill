@@ -1,6 +1,6 @@
 # react-native-foundations
 
-A Claude Code plugin for React Native development. Nine skills that search official docs, drive the iOS Simulator, diagnose errors, inspect layouts, audit accessibility, and debug the JS runtime.
+A Claude Code plugin for React Native development. Eight skills and a coding agent that search official docs, drive the iOS Simulator, diagnose errors, inspect layouts, audit accessibility, and debug the JS runtime.
 
 ## Install
 
@@ -19,9 +19,23 @@ claude plugin add ryanthedev/react-native-foundations.skill
 
 Bundles 218 official React Native doc files. No npm install, no build step.
 
+## Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/react-native-foundations:docs` | Search official React Native documentation |
+| `/react-native-foundations:ios-sim` | Drive the iOS Simulator |
+| `/react-native-foundations:diagnose` | Diagnose errors against 24 known patterns |
+| `/react-native-foundations:debug` | Runtime JS/React debugging |
+| `/react-native-foundations:layout-check` | Verify visual layout against Flexbox docs |
+| `/react-native-foundations:a11y-audit` | Audit accessibility |
+| `/react-native-foundations:deeplink-test` | Test deep links in the simulator |
+| `/react-native-foundations:clean` | Intelligent environment reset |
+| `/react-native-foundations:coding` | Coding agent with docs, diagnosis, and simulator |
+
 ## Skills
 
-### rn-docs
+### docs
 
 Grep-first search across bundled RN documentation. Ask about any API, component, hook, or platform behavior.
 
@@ -48,7 +62,7 @@ Uses [AXe](https://github.com/cameroncooke/AXe) for UI automation. Five targeted
 "Scroll to the bottom"
 ```
 
-### rn-diagnose
+### diagnose
 
 Matches errors against 24 known patterns covering Metro, build, runtime, and dependency failures. Checks Metro health first, then cross-references docs and project config. Dispatches subagents for large build logs and simulator screenshots so they don't bloat your context.
 
@@ -58,7 +72,7 @@ Matches errors against 24 known patterns covering Metro, build, runtime, and dep
 "pod install failed"
 ```
 
-### rn-debug
+### debug
 
 Runtime debugging for the JS and React layers. Console logs, expression evaluation, React component tree inspection, network monitoring, and HMR event streaming. Falls back to OS-level log capture when Metro isn't running.
 
@@ -71,7 +85,7 @@ Requires Node 22+ for CDP features (native WebSocket).
 "Monitor HMR updates"
 ```
 
-### rn-layout-check
+### layout-check
 
 Captures the simulator screen and accessibility tree in a subagent, analyzes element positions and spacing, then checks results against Flexbox and style documentation. When Metro is running, it also pulls computed style values from the React fiber tree.
 
@@ -80,7 +94,7 @@ Captures the simulator screen and accessibility tree in a subagent, analyzes ele
 "Why is this view overflowing?"
 ```
 
-### rn-a11y-audit
+### a11y-audit
 
 Walks the native accessibility tree and checks every element against a severity-rated checklist (critical, warning, info). When Metro is available, compares React-declared a11y props against the native tree and reports discrepancies.
 
@@ -89,16 +103,16 @@ Walks the native accessibility tree and checks every element against a severity-
 "Are my labels correct for VoiceOver?"
 ```
 
-### rn-coding
+### coding (agent)
 
-Lightweight guidance that makes Claude consult the docs before writing code and suggest verification after. No scripts, no Bash. Read the relevant docs, follow the patterns, then verify with `rn-layout-check`, `rn-a11y-audit`, or `rn-debug`.
+Dispatches a coding agent that loads the docs, diagnose, and ios-sim skills. Consults documentation before writing code, diagnoses errors when they occur, and verifies results on the simulator.
 
 ```
 "Write a FlatList component for this data"
 "Build a settings screen"
 ```
 
-### rn-deeplink-test
+### deeplink-test
 
 Reads your navigation/linking config, constructs test URLs, fires them into the simulator via `xcrun simctl openurl`, and verifies the resulting screen.
 
@@ -107,7 +121,7 @@ Reads your navigation/linking config, constructs test URLs, fires them into the 
 "Does my universal link config work?"
 ```
 
-### rn-clean
+### clean
 
 Diagnoses stale caches before cleaning instead of blindly wiping everything. Checks Metro, Watchman, node_modules, Pods, Derived Data, and Gradle caches, then only clears what's actually broken.
 
@@ -134,6 +148,6 @@ All four resolve the Metro port in the same order: `--port` flag, then `RCT_METR
 
 - Claude Code
 - [AXe](https://github.com/cameroncooke/AXe) (`brew install cameroncooke/axe/axe`) for ios-sim UI automation
-- iOS Simulator for ios-sim, rn-layout-check, rn-a11y-audit, rn-deeplink-test
-- Node 22+ for CDP features in rn-debug
+- iOS Simulator for ios-sim, layout-check, a11y-audit, deeplink-test
+- Node 22+ for CDP features in debug
 - A React Native project

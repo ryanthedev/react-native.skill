@@ -1,12 +1,12 @@
 ---
-name: rn-layout-check
+name: layout-check
 description: Verify visual layout against React Native Flexbox and style documentation. Captures the simulator screen in a subagent, analyzes element positions and spacing, and cross-references against official docs. Triggers on "does this look right", "check the layout", "why is this overflowing", "verify the spacing", "the UI looks wrong", "layout issue", "flexbox problem".
 allowed-tools: Bash, Read, Grep, Agent
 ---
 
-# Skill: rn-layout-check
+# Skill: layout-check
 
-**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `rn-layout-check v{version}` before proceeding.
+**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `layout-check v{version}` before proceeding.
 
 Verify visual layout against React Native's official Flexbox and style documentation.
 
@@ -31,7 +31,7 @@ Dispatch a subagent to capture the screen and analyze layout. Never load screens
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-layout-check: capture and analyze layout"
+  description: "layout-check: capture and analyze layout"
   prompt: |
     You are analyzing an iOS Simulator screen for React Native layout issues.
 

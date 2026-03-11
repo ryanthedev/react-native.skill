@@ -1,12 +1,12 @@
 ---
-name: rn-clean
+name: clean
 description: Intelligent environment reset for React Native projects — diagnoses stale caches before cleaning instead of blindly nuking everything. Triggers on "clean build", "reset caches", "fresh start", "metro won't start", "build is broken", "nuclear clean", "clear derived data".
 allowed-tools: Bash, Read, Grep
 ---
 
-# Skill: rn-clean
+# Skill: clean
 
-**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `rn-clean v{version}` before proceeding.
+**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `clean v{version}` before proceeding.
 
 Diagnose-first environment reset for React Native projects. Checks what is actually stale before cleaning, then executes only the necessary steps.
 
@@ -79,4 +79,4 @@ After cleaning, optionally verify the environment works:
 - `--pods` will run `pod install` after removing Pods
 - `--node-modules` will run `npm install` (or `yarn`) after removing node_modules
 - If Metro won't start, check port 8081 first — often a zombie process is the cause
-- Cross-reference build errors with the `rn-docs` skill for API/config guidance
+- Cross-reference build errors with the `docs` skill for API/config guidance

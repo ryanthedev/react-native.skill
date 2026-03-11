@@ -1,12 +1,12 @@
 ---
-name: rn-a11y-audit
+name: a11y-audit
 description: Audit accessibility of the running React Native app. Captures the accessibility tree from the iOS Simulator and checks it against React Native best practices. Triggers on "audit accessibility", "check a11y", "VoiceOver check", "accessibility issues", "screen reader test", "are labels correct".
 allowed-tools: Bash, Read, Grep, Agent
 ---
 
-# Skill: rn-a11y-audit
+# Skill: a11y-audit
 
-**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `rn-a11y-audit v{version}` before proceeding.
+**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `a11y-audit v{version}` before proceeding.
 
 Audit the accessibility tree of a running React Native app in the iOS Simulator against official React Native accessibility documentation.
 
@@ -40,7 +40,7 @@ Before dispatching the subagent, verify AXe is installed:
 Run: `command -v "${IOS_SIMULATOR_MCP_AXE_PATH:-axe}" >/dev/null 2>&1`
 
 If this fails, stop and tell the user:
-"rn-a11y-audit requires AXe to read the accessibility tree.
+"a11y-audit requires AXe to read the accessibility tree.
 Install with: `brew install cameroncooke/axe/axe`
 Then re-run this skill."
 
@@ -54,7 +54,7 @@ Never load the accessibility tree in main context. Dispatch a subagent.
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-a11y-audit: capture and analyze accessibility tree"
+  description: "a11y-audit: capture and analyze accessibility tree"
   prompt: |
     You are auditing the accessibility of a React Native app running in the iOS Simulator.
 

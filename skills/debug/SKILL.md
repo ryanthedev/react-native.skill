@@ -1,12 +1,12 @@
 ---
-name: rn-debug
+name: debug
 description: Debug React Native apps — view console logs, JS errors, Metro status, evaluate expressions, inspect React component tree, monitor network requests. Use for runtime debugging of JavaScript and React layers. Triggers on "console logs", "JS errors", "Metro status", "evaluate expression", "React component tree", "network requests", "debug".
 allowed-tools: Bash, Read, Agent
 ---
 
-# Skill: rn-debug
+# Skill: debug
 
-**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `rn-debug v{version}` before proceeding.
+**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `debug v{version}` before proceeding.
 
 Debug React Native apps through Metro, console log streams, CDP evaluation, component tree inspection, and network monitoring.
 
@@ -118,7 +118,7 @@ Step 1: Run the Pre-Flight Check (or verify targets if pre-flight already ran th
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-debug: stream console logs via CDP"
+  description: "debug: stream console logs via CDP"
   prompt: |
     1. Run: ${CLAUDE_SKILL_DIR}/../_shared/scripts/cdp-bridge.js console --timeout 10
        This streams console events as NDJSON to stdout.
@@ -136,7 +136,7 @@ Dispatch Agent:
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-debug: stream console logs via OS capture"
+  description: "debug: stream console logs via OS capture"
   prompt: |
     1. Run: ${CLAUDE_SKILL_DIR}/../_shared/scripts/logs.sh ios --timeout 10
        This streams JS console logs as NDJSON to stdout.
@@ -172,7 +172,7 @@ Only use full tree (no flags) via subagent — output can be 10-100 KB.
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-debug: inspect React component tree"
+  description: "debug: inspect React component tree"
   prompt: |
     1. Run: ${CLAUDE_SKILL_DIR}/../_shared/scripts/cdp-bridge.js tree [--find "ComponentName" if specified] [--depth 5 for overview]
        This outputs the React component tree as JSON.
@@ -194,7 +194,7 @@ Dispatch Agent:
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-debug: monitor network requests"
+  description: "debug: monitor network requests"
   prompt: |
     1. Run: ${CLAUDE_SKILL_DIR}/../_shared/scripts/cdp-bridge.js network --timeout 10
        This streams network events as NDJSON to stdout.
@@ -215,7 +215,7 @@ Dispatch Agent:
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-debug: monitor HMR update events"
+  description: "debug: monitor HMR update events"
   prompt: |
     1. Run: ${CLAUDE_SKILL_DIR}/../_shared/scripts/hmr.sh monitor --timeout 30
        This streams HMR events as NDJSON to stdout.

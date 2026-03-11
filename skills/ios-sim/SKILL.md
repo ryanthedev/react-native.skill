@@ -21,10 +21,10 @@ Always dispatch a subagent for visual/inspection tasks.
 
 | Skill | What it uses |
 |-------|-------------|
-| `rn-a11y-audit` | `ui.sh describe-all` for accessibility tree capture |
-| `rn-layout-check` | `capture.sh view` + `ui.sh describe-all` for screenshot and element positions |
-| `rn-diagnose` | `capture.sh view` to read error text from the simulator screen |
-| `rn-deeplink-test` | Screenshot capture to verify the screen after firing a deep link |
+| `a11y-audit` | `ui.sh describe-all` for accessibility tree capture |
+| `layout-check` | `capture.sh view` + `ui.sh describe-all` for screenshot and element positions |
+| `diagnose` | `capture.sh view` to read error text from the simulator screen |
+| `deeplink-test` | Screenshot capture to verify the screen after firing a deep link |
 
 ---
 

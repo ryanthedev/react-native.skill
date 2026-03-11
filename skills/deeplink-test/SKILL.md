@@ -1,12 +1,12 @@
 ---
-name: rn-deeplink-test
+name: deeplink-test
 description: Test deep links and URL schemes in the iOS Simulator. Reads navigation/linking config, constructs test URLs, fires them via xcrun simctl, and verifies the resulting screen. Triggers on "test deep link", "test this URL scheme", "verify navigation to", "does deeplink work", "open URL in simulator", "test universal link".
 allowed-tools: Bash, Read, Grep, Glob, Agent
 ---
 
-# Skill: rn-deeplink-test
+# Skill: deeplink-test
 
-**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `rn-deeplink-test v{version}` before proceeding.
+**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `deeplink-test v{version}` before proceeding.
 
 Test deep links by reading the project's navigation config, constructing URLs, firing them into the iOS Simulator, and verifying the correct screen loads.
 
@@ -39,7 +39,7 @@ Grep: "linking" or "prefixes" or "screens" in navigation files
 
 Look for `linking` config objects containing `prefixes` and `screens` mapping.
 
-### 2. Search rn-docs for deep linking patterns
+### 2. Search docs for deep linking patterns
 
 ```
 Grep the docs directory for deep linking reference:
@@ -69,7 +69,7 @@ Dispatch a subagent to capture and verify the simulator screen.
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-deeplink-test: verify deep link screen"
+  description: "deeplink-test: verify deep link screen"
   prompt: |
     A deep link was just fired into the iOS Simulator.
     Expected destination: [EXPECTED_SCREEN]

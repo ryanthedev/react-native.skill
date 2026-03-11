@@ -1,12 +1,12 @@
 ---
-name: rn-docs
+name: docs
 description: Search React Native official documentation. Use when answering questions about React Native APIs, components, hooks, layout, navigation, native modules, or platform-specific behavior. Triggers on "React Native", "RN docs", "how does View work", "FlatList props", "native module", "new architecture".
 allowed-tools: Read, Grep, Glob
 ---
 
-# Skill: rn-docs
+# Skill: docs
 
-**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `rn-docs v{version}` before proceeding.
+**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `docs v{version}` before proceeding.
 
 Search the official React Native documentation to answer questions accurately.
 

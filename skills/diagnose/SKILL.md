@@ -1,12 +1,12 @@
 ---
-name: rn-diagnose
+name: diagnose
 description: Diagnose React Native errors by cross-referencing error text against docs, error pattern database, and project config. Use for build failures, red screens, runtime crashes, and dependency issues. Triggers on "diagnose this error", "why is my build failing", "what does this red screen mean", "Unable to resolve module", "null is not an object", "Invariant Violation", "pod install failed", "gradlew failed", "EACCES", "metro error".
 allowed-tools: Bash, Read, Grep, Glob, Agent
 ---
 
-# Skill: rn-diagnose
+# Skill: diagnose
 
-**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `rn-diagnose v{version}` before proceeding.
+**On load:** Read `../../.claude-plugin/plugin.json` from this skill's base directory. Display `diagnose v{version}` before proceeding.
 
 Diagnose React Native errors by matching against known patterns, searching official docs, and inspecting project configuration.
 
@@ -102,7 +102,7 @@ Report it immediately rather than proceeding through all steps.
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-diagnose: capture error from simulator"
+  description: "diagnose: capture error from simulator"
   prompt: |
     1. Run: ${CLAUDE_SKILL_DIR}/../ios-sim/scripts/capture.sh view
        This outputs a file path to a compressed JPEG.
@@ -125,7 +125,7 @@ Read `${CLAUDE_SKILL_DIR}/references/error-patterns.md` and match the error text
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-diagnose: search docs for error context"
+  description: "diagnose: search docs for error context"
   prompt: |
     Search React Native docs for information related to this error.
 
@@ -167,7 +167,7 @@ If the user pastes or references a large build log (>100 lines), dispatch a suba
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-diagnose: parse build log"
+  description: "diagnose: parse build log"
   prompt: |
     Parse this build log and extract the root error.
 
@@ -203,7 +203,7 @@ After the user applies the fix, offer to verify by dispatching ios-sim:
 Dispatch Agent:
   subagent_type: general-purpose
   model: haiku
-  description: "rn-diagnose: verify fix on simulator"
+  description: "diagnose: verify fix on simulator"
   prompt: |
     1. Run: ${CLAUDE_SKILL_DIR}/../ios-sim/scripts/capture.sh view
     2. Read the output file path to see the screenshot.
